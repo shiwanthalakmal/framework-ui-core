@@ -39,24 +39,11 @@ public class PageBase {
     protected final String DEFAULT = "default";
 
     protected RemoteWebDriver driver;
-    public static ExtentReports extent = null;
-    public static ExtentTest test = null;
-
-    static {
-        extent = new ExtentReports("C:\\city-logger\\log4j-application.html", true);
-        test = extent.startTest("Citi Bank Process Automation", "Sample description");
-    }
 
     public PageBase(){   }
 
     public PageBase(RemoteWebDriver driver) {
         this.driver = driver;
-    }
-
-    public static void flushExtentReport(){
-        extent.endTest(test);
-        extent.flush();
-        extent.close();
     }
 
     protected void initializeElements(BasicPage sourcePage) throws FrameworkException {
@@ -102,7 +89,8 @@ public class PageBase {
 
     }
     public void test_step_initiation() {
-        test.log(LogStatus.INFO, Thread.currentThread().getStackTrace()[2].getMethodName());
         Reporter.log("<td> "+Thread.currentThread().getStackTrace()[2].getMethodName()+"</td><td>Started</td><td></td><td></td><td></td>");
     }
+
+    
 }
