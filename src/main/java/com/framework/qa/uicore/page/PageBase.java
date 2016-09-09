@@ -9,6 +9,7 @@ import com.relevantcodes.extentreports.LogStatus;
 import com.framework.qa.utils.exception.FrameworkException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.Assert;
 import org.testng.Reporter;
 
 import static com.framework.qa.uicore.util.StringUtil.*;
@@ -92,5 +93,24 @@ public class PageBase {
         Reporter.log("<td> "+Thread.currentThread().getStackTrace()[2].getMethodName()+"</td><td>Started</td><td></td><td></td><td></td>");
     }
 
-    
+    public void verifyTrue(boolean actual){
+        Assert.assertTrue(actual,"Expected value was: true, but Actual is: "+actual);
+    }
+
+    public void verifyText(String expected,String actual){
+        Assert.assertEquals(actual,expected,"Expected value was: "+expected+", but Actual is: "+actual);
+    }
+
+    public void verifyText(int expected,int actual){
+        Assert.assertEquals(actual,expected,"Expected value was: "+expected+", but Actual is: "+actual);
+    }
+
+    public void verifyText(float expected,float actual){
+        Assert.assertEquals(actual,expected,"Expected value was: "+expected+", but Actual is: "+actual);
+    }
+
+    public void verifyCollection(Map expected,Map actual){
+        Assert.assertEquals(actual.values().toArray(),expected,"Expected value was: "+Arrays.toString(expected.values().toArray())+", but actual is: "+Arrays.toString(actual.values().toArray()));
+    }
+
 }

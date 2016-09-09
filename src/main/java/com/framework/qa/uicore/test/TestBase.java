@@ -37,7 +37,6 @@ public class TestBase {
     @AfterMethod(alwaysRun = true)
     public void tearDown() throws FrameworkException {
         DriverConnection.closeDriver();
-        PageBase.flushExtentReport();
     }
 
     @AfterSuite

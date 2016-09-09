@@ -220,6 +220,7 @@ public class DriverConnection {
                     chromePrefs.put("profile.default_content_settings.popups", 0);
                     chromePrefs.put("download.default_directory", Constant.DOWNLOAD_PATH);
                     ChromeOptions options = new ChromeOptions();
+                    options.addArguments("--disable-extensions");
                     options.setExperimentalOption("prefs", chromePrefs);
                     capability = DesiredCapabilities.chrome();
                     capability.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
