@@ -1,5 +1,7 @@
 package com.framework.qa.uicore.page;
 
+import com.framework.qa.uicore.verification.Actual;
+import com.framework.qa.uicore.verification.Expected;
 import com.framework.qa.utils.util.FrameworkProperties;
 import com.framework.qa.webelementcore.elementbase.core.BaseElement;
 import com.relevantcodes.extentreports.ExtentReports;
@@ -12,6 +14,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.Reporter;
 
+import static com.framework.qa.uicore.util.CoreUtil.logVerificationError;
 import static com.framework.qa.uicore.util.StringUtil.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -39,9 +42,15 @@ public class PageBase {
     protected final String VALUE = "value";
     protected final String DEFAULT = "default";
 
+    protected StringBuffer verificationErrors = new StringBuffer();
+    protected StringBuffer errorMessage = new StringBuffer();
     protected RemoteWebDriver driver;
+    protected Actual actual;
+    protected Expected expected;
 
-    public PageBase(){   }
+    public PageBase() {
+    }
+
 
     public PageBase(RemoteWebDriver driver) {
         this.driver = driver;
@@ -93,24 +102,121 @@ public class PageBase {
         Reporter.log("<td> "+Thread.currentThread().getStackTrace()[2].getMethodName()+"</td><td>Started</td><td></td><td></td><td></td>");
     }
 
-    public void verifyTrue(boolean actual){
-        Assert.assertTrue(actual,"Expected value was: true, but Actual is: "+actual);
+    public void verifyTrue(boolean condition, String message) {
+        try {
+            Assert.assertTrue(condition, message);
+        } catch (AssertionError var3) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var3.getMessage()));
+            this.verificationErrors.append(throwableToString(var3));
+        }
     }
 
-    public void verifyText(String expected,String actual){
-        Assert.assertEquals(actual,expected,"Expected value was: "+expected+", but Actual is: "+actual);
+    public void verifyFalse(boolean condition, String message) {
+        try {
+            Assert.assertFalse(condition, message);
+        } catch (AssertionError var3) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var3.getMessage()));
+            this.verificationErrors.append(throwableToString(var3));
+        }
     }
 
-    public void verifyText(int expected,int actual){
-        Assert.assertEquals(actual,expected,"Expected value was: "+expected+", but Actual is: "+actual);
+    public void verifyEquals(Object actual, Object expected, String message) {
+        try {
+            Assert.assertEquals(actual, expected, message);
+        } catch (AssertionError var4) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var4.getMessage()));
+            this.verificationErrors.append(throwableToString(var4));
+        }
     }
 
-    public void verifyText(float expected,float actual){
-        Assert.assertEquals(actual,expected,"Expected value was: "+expected+", but Actual is: "+actual);
+    public void verifyEquals(String actual, String expected, String message) {
+        try {
+            Assert.assertEquals(actual, expected, message);
+        } catch (AssertionError var4) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var4.getMessage()));
+            this.verificationErrors.append(throwableToString(var4));
+        }
     }
 
-    public void verifyCollection(Map expected,Map actual){
-        Assert.assertEquals(actual.values().toArray(),expected,"Expected value was: "+Arrays.toString(expected.values().toArray())+", but actual is: "+Arrays.toString(actual.values().toArray()));
+    public void verifyEquals(boolean actual, boolean expected, String message) {
+        try {
+            Assert.assertEquals(actual, expected, message);
+        } catch (AssertionError var4) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var4.getMessage()));
+            this.verificationErrors.append(throwableToString(var4));
+        }
+    }
+
+    public void verifyEquals(Collection<?> actual, Collection<?> expected, String message) {
+        try {
+            Assert.assertEquals(actual, expected, message);
+        } catch (AssertionError var4) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var4.getMessage()));
+            this.verificationErrors.append(throwableToString(var4));
+        }
+    }
+
+    public void verifyNotEquals(Object actual, Object expected, String message) {
+        try {
+            Assert.assertNotEquals(actual, expected, message);
+        } catch (AssertionError var4) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var4.getMessage()));
+            this.verificationErrors.append(throwableToString(var4));
+        }
+    }
+
+    public void verifyNotEquals(String actual, String expected, String message) {
+        try {
+            Assert.assertNotEquals(actual, expected, message);
+        } catch (AssertionError var4) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var4.getMessage()));
+            this.verificationErrors.append(throwableToString(var4));
+        }
+    }
+
+    public void verifyNotEquals(boolean actual, boolean expected, String message) {
+        try {
+            Assert.assertNotEquals(actual, expected, message);
+        } catch (AssertionError var4) {
+            logVerificationError(driver, message, getFileName());
+            this.errorMessage.append(createVerificationFailMessage(var4.getMessage()));
+            this.verificationErrors.append(throwableToString(var4));
+        }
+    }
+
+    public void checkForVerificationErrors() {
+        String verificationErrorString = this.errorMessage.toString() + "\n" + this.verificationErrors.toString();
+        this.clearVerificationErrors();
+        if (!"\n".equals(verificationErrorString)) {
+            Assert.fail(verificationErrorString);
+        }
+    }
+
+    public void check_For_Verification_Errors(){
+        checkForVerificationErrors();
+    }
+
+    public void clearVerificationErrors() {
+        this.verificationErrors = new StringBuffer();
+        this.errorMessage = new StringBuffer();
+    }
+
+    public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+        fields.addAll(Arrays.asList(type.getDeclaredFields()));
+
+        if (!type.getSuperclass().getSimpleName().equalsIgnoreCase("BasicPage")) {
+            fields = getAllFields(fields, type.getSuperclass());
+        }
+
+        return fields;
     }
 
 }
