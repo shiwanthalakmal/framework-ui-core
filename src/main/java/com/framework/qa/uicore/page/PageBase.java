@@ -51,7 +51,6 @@ public class PageBase {
     public PageBase() {
     }
 
-
     public PageBase(RemoteWebDriver driver) {
         this.driver = driver;
     }
